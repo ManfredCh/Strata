@@ -1,0 +1,62 @@
+[strata] 2026-10-07 01:38:20 engine started: /home/s18/models/Strata/engine/strata --serve --pack /home/s18/models/Strata-data/packs/unsloth-ud-iq4_xs --native /home/s18/models/Strata-data/models/unsloth-UD-IQ4_XS/Qwen3.8-Flash-Next-UD-IQ4_XS-00001-of-00003.gguf --expert-profile /home/s18/models/Strata/data/expert-profile.bin --expert-cache auto --prefill auto --spec 4 --spec-min-p 0.5 --mtp /home/s18/models/Strata-data/mtp/rt --max-context 262144 --kv int8 --kv-resident 32768 --resident-budget-gib 55 --pool-workers 15
+strata generate: KV streaming: 32768 of 262144 cells per QSA layer in VRAM, the K/V in 3.09 GiB of pinned RAM
+strata generate: expert cache auto: 14.50 GiB free, 700 MiB reserved (+218 MiB for the draft head) -> 4193 slots
+strata generate: expert cache 6030 slots, 13.59 GiB of VRAM; policy is
+strata generate: session is up (engine 0.1.40)
+FileExpertSource: RAM budget 55.00 GiB: 18546 of the 41.84 GiB of experts the GPU cache does not hold, by profile rank; the rest are read from the files
+FileExpertSource: allocating 41.84 GiB page-locked cache complement
+FileExpertSource: copied cache complement through layer 8/48 (9.61 GiB, 3 s)
+FileExpertSource: copied cache complement through layer 16/48 (15.36 GiB, 5 s)
+FileExpertSource: copied cache complement through layer 24/48 (22.38 GiB, 7 s)
+FileExpertSource: copied cache complement through layer 32/48 (30.38 GiB, 9 s)
+FileExpertSource: copied cache complement through layer 40/48 (36.33 GiB, 11 s)
+FileExpertSource: copied cache complement through layer 48/48 (41.84 GiB, 12 s)
+FileExpertSource: mapped pinned cache complement ready: resident 41.84 GiB, pinned 41.84 GiB in 26 s; page-locked and mapped
+strata generate: resident RAM mode: 41.84 GiB of experts in RAM (page-locked), 6030 in the GPU cache; adaptive swaps exchange them with the GPU cache (no file reads)
+strata serve: prompt chunk auto: 8192 tokens, a 96-slot ring
+strata mtp: draft head over 106299 tokens (212.9 MiB)
+strata serve: 213 MiB of VRAM free with everything loaded - LOW: requests may stall; add --vram-reserve-mib 999 to the config's args (or lower --max-context)
+strata serve: decode expert cache hit rate: 84.8% (275265 hits / 324588 lookups); 9012 more read by the GPU over PCIe or from another GPU (2.7% of all 333600 routed)
+strata serve: KV streaming: 99.75% of 713772 block reads hit VRAM, 7.2 MiB read from RAM
+
+### bench runs (as installed)
+strata serve: prompt 82 tokens = 0 reused + 82 read in 1444 ms (56.8 tok/s), 512 generated in 17270 ms (29.6 tok/s), drafts accepted 241 of 423, 1 checkpoints
+strata serve: prompt 84 tokens = 0 reused + 84 read in 1183 ms (71.0 tok/s), 512 generated in 24090 ms (21.3 tok/s), drafts accepted 287 of 406, 1 checkpoints
+strata serve: prompt 74 tokens = 0 reused + 74 read in 2490 ms (29.7 tok/s), 512 generated in 23718 ms (21.6 tok/s), drafts accepted 251 of 414, 1 checkpoints
+strata serve: prompt 74 tokens = 69 reused + 5 read in 148 ms (33.9 tok/s), 512 generated in 18239 ms (28.1 tok/s), drafts accepted 234 of 424, 1 checkpoints
+strata serve: prompt 34 tokens = 0 reused + 34 read in 1046 ms (32.5 tok/s), 128 generated in 5686 ms (22.5 tok/s), drafts accepted 92 of 109, 1 checkpoints
+strata serve: prompt 27 tokens = 0 reused + 27 read in 743 ms (36.3 tok/s), 128 generated in 5345 ms (23.9 tok/s), drafts accepted 65 of 131, 1 checkpoints
+
+### bench runs (tuned: --pcie-frac 0.55 --spec-min-p 0.70)
+strata serve: prompt 74 tokens = 69 reused + 5 read in 148 ms (33.9 tok/s), 512 generated in 18239 ms (28.1 tok/s), drafts accepted 234 of 424, 1 checkpoints
+strata serve: prompt 74 tokens = 0 reused + 74 read in 2923 ms (25.3 tok/s), 512 generated in 22111 ms (23.2 tok/s), drafts accepted 212 of 328, 1 checkpoints
+strata serve: prompt 74 tokens = 69 reused + 5 read in 216 ms (23.1 tok/s), 512 generated in 18961 ms (27.0 tok/s), drafts accepted 224 of 333, 1 checkpoints
+strata serve: prompt 74 tokens = 69 reused + 5 read in 313 ms (16.0 tok/s), 512 generated in 17754 ms (28.8 tok/s), drafts accepted 222 of 313, 1 checkpoints
+strata serve: prompt 74 tokens = 0 reused + 74 read in 2580 ms (28.7 tok/s), 512 generated in 19460 ms (26.3 tok/s), drafts accepted 221 of 325, 1 checkpoints
+strata serve: prompt 74 tokens = 69 reused + 5 read in 109 ms (45.9 tok/s), 512 generated in 15535 ms (33.0 tok/s), drafts accepted 221 of 318, 1 checkpoints
+strata serve: prompt 82 tokens = 0 reused + 82 read in 2398 ms (34.2 tok/s), 305 generated in 13130 ms (23.2 tok/s), drafts accepted 156 of 192, 1 checkpoints
+strata serve: prompt 74 tokens = 0 reused + 74 read in 2460 ms (30.1 tok/s), 512 generated in 22642 ms (22.6 tok/s), drafts accepted 222 of 292, 1 checkpoints
+
+### decode timing
+strata serve: prompt 77 tokens = 0 reused + 77 read in 2397 ms (32.1 tok/s), 155 generated in 8870 ms (17.5 tok/s), drafts accepted 94 of 106, 1 checkpoints
+strata serve: decode expert cache hit rate: 75.8% (51954 hits / 68514 lookups); 13086 more read by the GPU over PCIe or from another GPU (16.0% of all 81600 routed)
+--
+strata decode timing: 53 windows, avg T 2.25, 1.98 tokens/window, 110.04 ms/window = verify 81.41 (GPU-reach wait 57.48 + per-layer host 22.09 [plan 0.15 actq 0.36 jobs 0.02 CPU 20.53] + stage 0.02) + commit/emit 0.05 + draft 4.45; per layer-window: CPU experts 2.92 (3.81 entries), VRAM hits 15.68, PCIe 2.69
+strata serve: prompt 3417 tokens = 0 reused + 3417 read in 5223 ms (654.2 tok/s), 105 generated in 5832 ms (18.0 tok/s), drafts accepted 55 of 66, 1 checkpoints
+strata serve: decode expert cache hit rate: 80.4% (39878 hits / 49573 lookups); 7547 more read by the GPU over PCIe or from another GPU (13.2% of all 57120 routed)
+
+### calibrate sweep (aborted at 23-worker restart)
+  Tuning Strata for this PC: the output speed is measured with a few engine settings (the PCIe share, the
+    PCIe share 0.00: 26.6 tok/s
+    PCIe share 0.20: 27.6 tok/s
+    PCIe share 0.25: 25.1 tok/s
+    PCIe share 0.35: 27.5 tok/s
+    PCIe share 0.55: 28.2 tok/s
+    PCIe share 0.75: 21.9 tok/s
+    draft floor 0.30: 23.3 tok/s
+    draft floor 0.50: 26.4 tok/s
+    draft floor 0.70: 27.3 tok/s
+  [!]  the tuning did not finish (the engine exited before it was ready (see /home/s18/models/Strata/strata-unsloth-ud-iq4_xs.log). mtp: the draft head does not fit. the draft head over 106299 tokens needs 213 MiB of VRAM and 274 MiB is free. hint: a smaller draft vocabulary needs less VRAM: --draft-vocab cyrillic (English, code and the Cyrillic script, ~118 MiB) or --draft-vocab en (English and code, ~81 MiB). Start once with it - START-HERE.bat --draft-vocab en (Windows) or ./setup.sh --draft-vocab en - and the model keeps it ("draft_vocab" in its strata-*.json config); or a smaller --context in setup.
+  strata serve: mtp: the draft head does not fit): the default settings stay
+       the engine said: strata serve: mtp: the draft head does not fit
+  [!]  this PC is NOT tuned: the tuning failed (the reason is above); the model starts with the default settings
